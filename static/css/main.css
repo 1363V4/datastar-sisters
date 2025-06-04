@@ -1,0 +1,38 @@
+@import url('gold.css');
+@import url('https://fonts.googleapis.com/css2?family=National+Park&family=Sigmar+One&display=swap');
+
+:root {
+    --primary: #137481;
+    --secondary: #d8a841;
+    --text: #012345;
+    --bg-primary: #a1a7b1;
+    --bg-secondary: #567dad;
+    --bg-2: hsl(from var(--bg-secondary) h s 60);
+    --bg-3: hsl(from var(--bg-secondary) h s 70);
+}
+
+html {
+    font-size: 2rem;
+    font-family: "National Park", sans-serif;
+    color: var(--text);
+}
+
+body {
+    background: var(--bg-secondary);
+}
+
+#overlay {
+    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    font-family: "Sigmar One", sans-serif;
+}
+
+button {
+    background: aliceblue;
+    border-radius: var(--m);
+    padding-inline: var(--s);
+    cursor: pointer;
+    pointer-events: all;
+}
