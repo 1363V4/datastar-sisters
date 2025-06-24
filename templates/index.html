@@ -15,19 +15,21 @@
     </style>
 </head>
 <body>
-    <div class="gz gs">
+    <main id="main" class="gz gs">
         <div id="overlay">
-            <div class="gc" style="height: 100%;">
-                <button
-                data-on-click="@post('/test')"
-                >play now</button>
+            <div class="gc">
+                <p>discover your sisters!</p>
+                <input 
+                data-bind-city 
+                list="cities"
+                placeholder="my city"
+                data-on-change="@post('sister')">
+                <datalist id="cities" data-on-load="@get('/cities')">
+                </datalist>
             </div>
         </div>
-        <globe-component 
-            id="globe"
-            zoom='{"lat": 50, "lng": 10}'
-        ></globe-component>
-    </div>
+        <globe-component id="globe"></globe-component>
+    </main>
     <script src="/static/js/globe_component.js"></script>
     <script src="/static/js/main.js"></script>
 </body>

@@ -1,33 +1,33 @@
 class GlobeComponent extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
-        this.shadowRoot.innerHTML = `
-            <div id="globe-container"></div>
+        this.innerHTML = `
+            <div id="globe-container" data-ignore-morph></div>
             <style>
-                .place-marker {
-                    color: #ff0000;
-                    width: 20px;
-                    top: -10px;
-                    position: relative;
-                }
-                .place-marker svg {
-                    width: 100%;
-                    height: 100%;
-                }
-                .place-name {
-                    position: absolute;
-                    top: 0px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    white-space: nowrap;
-                    color: white;
-                    text-shadow: 1px 1px 2px black;
-                    font-size: 12px;
-                }
+            .place-marker {
+                color: #ff0000;
+                width: 20px;
+                top: -10px;
+                position: relative;
+            }
+            .place-marker svg {
+                width: 100%;
+                height: 100%;
+            }
+            .place-name {
+                position: absolute;
+                top: 0px;
+                left: 50%;
+                transform: translateX(-50%);
+                white-space: nowrap;
+                color: white;
+                text-shadow: 1px 1px 2px black;
+                font-size: 12px;
+            }
             </style>
         `;
-        this.container = this.shadowRoot.getElementById('globe-container');
+        this.container = this.querySelector('#globe-container');
+        
         this.globe = null;
         this.markerSvg = `<svg viewBox="-4 0 36 36">
             <path fill="currentColor" d="M14,0 C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 Z"></path>
