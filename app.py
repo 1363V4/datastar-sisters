@@ -7,12 +7,22 @@ from tinydb import TinyDB, where
 
 import json
 import time
+import logging
 
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[
+        logging.FileHandler("log/perso.log"),
+        logging.StreamHandler()
+    ]
+)
 
 # CONFIG
 
 app = Quart(__name__)
-app.secret_key = 'a_secret_key'
 app.asgi_app = BrotliMiddleware(app.asgi_app) 
 
 db = TinyDB("data.json", sort_keys=True, indent=4, ensure_ascii=False)
@@ -32,7 +42,6 @@ async def cities():
         for city in cities:
             html += f"<option>{city['display']}</option>"
     html += '</datalist>'
-    print(html)
     return DatastarResponse(SSE.merge_fragments(html))
 
 @app.post('/sister')
@@ -45,7 +54,7 @@ async def sister():
             arcs = []
             lat1, lng1 = city['lat'], city['lng']
             g_places[city['display']] = {'lat': lat1, 'lng': lng1}
-            print(time.time())
+            logging.info(time.time())
             sis_data = db_cities.get(doc_ids=city['sis'])
             for data in sis_data:
                 lat2, lng2 = data['lat'], data['lng']
@@ -56,7 +65,7 @@ async def sister():
                     'endLat': float(lat2),
                     'endLng': float(lng2)
                 })
-            print(time.time())
+            logging.info(time.time())
             g_places = json.dumps(g_places)
             g_arcs = json.dumps(arcs)
             zoom = json.dumps({'lat': lat1, 'lng': lng1})

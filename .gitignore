@@ -11,3 +11,5 @@ wheels/
 
 # Other
 data.json
+*.sock
+*.log

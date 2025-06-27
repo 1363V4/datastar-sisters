@@ -1,0 +1,9 @@
+bind = "unix:/home/le/sisters/sisters.sock"
+workers = 1
+reload = true
+loglevel = "info"
+errorlog = "-"
+accesslog = "/home/le/sisters/log/access.log"
+keep_alive_timeout = 120
+group = "www-data"
+umask = 0
