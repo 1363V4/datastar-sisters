@@ -1,31 +1,7 @@
 class GlobeComponent extends HTMLElement {
     constructor() {
         super();
-        this.innerHTML = `
-            <div id="globe-container" data-ignore-morph></div>
-            <style>
-            .place-marker {
-                color: #ff0000;
-                width: 20px;
-                top: -10px;
-                position: relative;
-            }
-            .place-marker svg {
-                width: 100%;
-                height: 100%;
-            }
-            .place-name {
-                position: absolute;
-                top: 0px;
-                left: 50%;
-                transform: translateX(-50%);
-                white-space: nowrap;
-                color: white;
-                text-shadow: 1px 1px 2px black;
-                font-size: 12px;
-            }
-            </style>
-        `;
+        this.innerHTML = `<div id="globe-container" data-ignore-morph></div>`;
         this.container = this.querySelector('#globe-container');
         
         this.globe = null;
@@ -91,7 +67,10 @@ class GlobeComponent extends HTMLElement {
                 lng: parseFloat(coords.lng),
                 html: `<div class="place-marker">
                     ${this.markerSvg}
-                    <div class="place-name">${name.replace('___', ', ')}</div>
+                    <div class="place-name" 
+                    data-indicator-fetching 
+                    data-on-click="$city = '${name}'; @post('/sister')"
+                    >${name}</div>
                 </div>`
             }));
             

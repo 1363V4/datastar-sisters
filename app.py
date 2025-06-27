@@ -1,16 +1,22 @@
-from quart import Quart, session, render_template, request
+from quart import Quart, render_template
 from datastar_py import ServerSentEventGenerator as SSE
 from datastar_py.quart import DatastarResponse, read_signals
+from brotli_asgi import BrotliMiddleware
+
+from tinydb import TinyDB, where
 
 import json
+import time
 
-from data.places import places
-from data.sisters import sisters
 
 # CONFIG
 
 app = Quart(__name__)
 app.secret_key = 'a_secret_key'
+app.asgi_app = BrotliMiddleware(app.asgi_app) 
+
+db = TinyDB("data.json", sort_keys=True, indent=4, ensure_ascii=False)
+db_cities = db.table("cities")
 
 @app.get('/')
 async def index():
@@ -19,73 +25,48 @@ async def index():
 @app.get('/cities')
 async def cities():
     html = '<datalist id="cities">'
-    for place in places:
-        ci, co = place.split("___")
-        html += f"<option>{ci} ({co})</option>"
+    signals = await read_signals()
+    if city := signals.get('city'):
+        all_cities = db_cities.all()
+        cities = [c for c in all_cities if city.lower() in c.get("city", "").lower()]
+        for city in cities:
+            html += f"<option>{city['display']}</option>"
     html += '</datalist>'
+    print(html)
     return DatastarResponse(SSE.merge_fragments(html))
-
-@app.post('/test')
-async def test():
-    places = {
-        "Berat___Albania": {
-            "lat": "40.70222",
-            "lng": "19.95833"
-        },
-        "Amasya___Turkey": {
-            "lat": "40.65000",
-            "lng": "35.83306"
-        },
-        "Brest___France": {
-            "lat": "48.39",
-            "lng": "-4.49"
-        },
-    }
-    g_places = json.dumps(places)
-    arcs = [
-        {'startLat': 10, 'startLng': 10, 'endLat': 20, 'endLng': 20}
-    ]
-    g_arcs = json.dumps(arcs)
-    return DatastarResponse(
-        SSE.merge_fragments(f'''<globe-component 
-                    id="globe"
-                    places='{g_places}'
-                    arcs='{g_arcs}'
-                ></globe-component>''')
-    )
 
 @app.post('/sister')
 async def sister():
     signals = await read_signals()
     if signals.get('city'):
-        print(signals['city'])
-        city = signals['city']
-        ci, co = city.split()
-        city_code = f"{ci}___{co.replace("(", "").replace(")", "")}"
-        print(city_code)
-        if city_code in places:
-            sister_cities = sisters[city_code]
+        city = db_cities.get(where("display") == signals['city'])
+        if city:
             g_places = {}
             arcs = []
-            lat1, lng1 = places[city_code].values()
-            g_places[city_code] = {'lat': lat1, 'lng': lng1}
-            for code in sister_cities:
-                lat, lng = places[code].values()
-                g_places[code] = {'lat': lat, 'lng': lng}
-                lat2, lng2 = places[code].values()
+            lat1, lng1 = city['lat'], city['lng']
+            g_places[city['display']] = {'lat': lat1, 'lng': lng1}
+            print(time.time())
+            sis_data = db_cities.get(doc_ids=city['sis'])
+            for data in sis_data:
+                lat2, lng2 = data['lat'], data['lng']
+                g_places[data['display']] = {'lat': lat2, 'lng': lng2}
                 arcs.append({
                     'startLat': float(lat1),
                     'startLng': float(lng1),
                     'endLat': float(lat2),
                     'endLng': float(lng2)
                 })
+            print(time.time())
             g_places = json.dumps(g_places)
             g_arcs = json.dumps(arcs)
+            zoom = json.dumps({'lat': lat1, 'lng': lng1})
             return DatastarResponse(SSE.merge_fragments(
                 f'''<globe-component id="globe" 
                 places='{g_places}'
                 arcs='{g_arcs}'
-                zoom='{json.dumps({'lat': lat1, 'lng': lng1})}'></globe-component>''')
+                zoom='{zoom}'>
+                <div id="globe-container" data-ignore-morph></div>
+                </globe-component>''')
                 )
     return DatastarResponse()
 

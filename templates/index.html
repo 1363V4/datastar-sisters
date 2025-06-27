@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>GlobeGL Quart App</title>
-    <link rel="icon" href="/static/img/dordle.png">
+    <link rel="icon" href="/static/img/world.svg">
     <link rel="stylesheet" href="/static/css/main.css">
     <!-- <script src="https://unpkg.com/three"></script> -->
     <script src="https://unpkg.com/globe.gl"></script>
@@ -15,16 +15,24 @@
     </style>
 </head>
 <body>
-    <main id="main" class="gz gs">
+    <main id="main" class="gz gs" data-signals-fetching="0">
+        <div id="indicator" data-show="$fetching">
+            <img src="/static/img/world.svg" alt="World">
+        </div>
         <div id="overlay">
             <div class="gc">
                 <p>discover your sisters!</p>
-                <input 
-                data-bind-city 
-                list="cities"
-                placeholder="my city"
-                data-on-change="@post('sister')">
-                <datalist id="cities" data-on-load="@get('/cities')">
+                <div>
+                    <input 
+                    data-bind-city 
+                    list="cities"
+                    placeholder="my city"
+                    data-indicator-fetching
+                    data-on-input__debounce.1s="@get('/cities')"
+                    >
+                    <button data-on-click="@post('/sister')">-></button>
+                </div>
+                <datalist id="cities">
                 </datalist>
             </div>
         </div>

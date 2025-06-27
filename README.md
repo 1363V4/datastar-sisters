@@ -3,3 +3,5 @@ pas possible d'accrocher du d* dans le shadow dom
 mais si j'en sors le morph écrase tout...
 
 une fois ça fait, good enough pour vidéo
+
+> ensuite kanbin et eyeroes
