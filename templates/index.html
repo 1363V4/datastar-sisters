@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GlobeGL Quart App</title>
+    <title>Sisters!</title>
     <link rel="icon" href="/static/img/world.svg">
     <link rel="stylesheet" href="/static/css/main.css">
-    <!-- <script src="https://unpkg.com/three"></script> -->
     <script src="https://unpkg.com/globe.gl"></script>
     <script type="module" src="/static/js/datastar.js"></script>
     <style>
@@ -30,7 +29,7 @@
                     data-indicator-fetching
                     data-on-input__debounce.1s="@get('/cities')"
                     >
-                    <button data-on-click="@post('/sister')">-></button>
+                    <button data-on-click="@post('/sister')">→</button>
                 </div>
                 <datalist id="cities">
                 </datalist>
