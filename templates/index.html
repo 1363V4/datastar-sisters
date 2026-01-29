@@ -29,15 +29,14 @@
                     data-indicator-fetching
                     data-on-input__debounce.1s="@get('/cities')"
                     >
-                    <button data-on-click="@post('/sister')">→</button>
+                    <button data-on-click="@post('/' + $city)">⇒</button>
                 </div>
                 <datalist id="cities">
                 </datalist>
             </div>
         </div>
-        <globe-component id="globe"></globe-component>
+        {{ globe | safe }}
     </main>
     <script src="/static/js/globe_component.js"></script>
-    <script src="/static/js/main.js"></script>
 </body>
 </html>

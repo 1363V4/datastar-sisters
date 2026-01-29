@@ -29,6 +29,11 @@ class GlobeComponent extends HTMLElement {
 
     connectedCallback() {
         this.initGlobe();
+        for (const name of this.constructor.observedAttributes) {
+            if (this.hasAttribute(name)) {
+                this.attributeChangedCallback(name, null, this.getAttribute(name));
+            }
+        }
     }
 
     initGlobe() {
@@ -38,7 +43,6 @@ class GlobeComponent extends HTMLElement {
     }
 
     updatePaths(paths) {
-        console.log(paths);
         if (this.globe) {
             this.globe.pathsData(paths)
                 .pathColor(() => '#ff0000')
@@ -47,7 +51,6 @@ class GlobeComponent extends HTMLElement {
     }
 
     updateZoom(zoomData) {
-        console.log(zoomData);
         if (this.globe) {
             this.globe.pointOfView(
                 {
@@ -69,7 +72,7 @@ class GlobeComponent extends HTMLElement {
                     ${this.markerSvg}
                     <div class="place-name" 
                     data-indicator-fetching 
-                    data-on-click="$city = '${name}'; @post('/sister')"
+                    data-on-click="$city = '${name}'; @post('/' + $city)"
                     >${name}</div>
                 </div>`
             }));
